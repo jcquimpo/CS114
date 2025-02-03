@@ -15,7 +15,7 @@ public class testFile {
             Scanner scanner = new Scanner(new File("ClassProjects/Project1/compressedMaze.dat"));
             rows = scanner.nextInt();
             cols = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();
             maze = new char[rows][cols];
             for (int i = 0; i < rows; i++) {
                 String line = scanner.nextLine();
@@ -57,10 +57,10 @@ public class testFile {
             return true;
         }
 
-        // Mark current cell as part of the path
+        // Mark current cell
         maze[row][col] = '+';
 
-        // Explore adjacent cells
+        // Check surrounding cells
         if (isValid(row - 1, col) && solveMaze(row - 1, col)) return true; // Up
         if (isValid(row + 1, col) && solveMaze(row + 1, col)) return true; // Down
         if (isValid(row, col - 1) && solveMaze(row, col - 1)) return true; // Left

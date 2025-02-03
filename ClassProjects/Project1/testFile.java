@@ -35,7 +35,8 @@ public class testFile {
                         break;
                     }
                 }
-                if (startRow != -1) break;
+                if (startRow != -1) 
+                break;
             }
 
             // Solve maze

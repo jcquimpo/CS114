@@ -1,35 +1,104 @@
 package Project1;
 
-import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.FileReader;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        int number = 5;
-        System.out.println("Factorial of " + number + " is: " + factorial(number));
 
-        String filePath = "ClassProjects/Project1/maze.dat";
-        readFile(filePath);
-    }
+    private char[][] theMaze;
+    private int colStart, rowStart;
+    private int rows, cols;
+    private String outputFilename;
 
-    public static void readFile(String filePath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+    public Main(String filename) throws IOException {
+        try {
+            this.outputFilename = filename;
+            Scanner scan = new Scanner(new File(filename));
+            StringBuilder sb = new StringBuilder();
+            while (scan.hasNext()) {
+                sb.append(scan.nextLine());
+                this.rows++;
             }
-        } catch (IOException e) {
+            this.cols = sb.length() / this.rows;
+            this.theMaze = new char[this.rows][this.cols];
+            int m = 0;
+            System.out.println();
+            for (int i = 0; i < this.rows; i++) {
+                for (int j = 0; j < this.cols; j++) {
+                    this.theMaze[i][j] = sb.charAt(m++);
+                }
+            }
+            scan.close();
+            findStart();
+            if (solve(this.rowStart, this.colStart)) {
+                System.out.println("Maze solved!");
+            } else {
+                System.out.println("Maze cannot be solved.");
+            }
+            printMaze();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+            System.out.println("ERROR : " + e.getMessage());
         }
     }
 
-    public static int factorial(int n) {
-        // System.out.println("Calculating factorial(" + n + ")");
-        if (n <= 1) {
-            return 1;
-        } else {
-            return n * factorial(n - 1);
+    private void findStart() {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (this.theMaze[i][j] == '+') {
+                    this.rowStart = i;
+                    this.colStart = j;
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean solve(int row, int col) {
+        // Check if out of bounds or on a wall or already visited
+        if (row < 0 || col < 0 || row >= rows || col >= cols || theMaze[row][col] == 'X' || theMaze[row][col] == '.') {
+            return false;
+        }
+
+        // Check if we found the goal
+        if (theMaze[row][col] == '-') { 
+            return true;
+        }
+
+        // Mark the current cell as part of the path
+        if (theMaze[row][col] != '+') {
+            theMaze[row][col] = '+';
+        }
+
+        // Recursively explore directions
+        if (solve(row - 1, col)) return true; // Up
+        if (solve(row + 1, col)) return true; // Down
+        if (solve(row, col - 1)) return true; // Left
+        if (solve(row, col + 1)) return true; // Right
+
+        // Unmark the current cell (backtrack)
+        if (theMaze[row][col] != '+') {
+            theMaze[row][col] = '.';
+        }
+        return false;
+    }
+
+    private void printMaze() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                System.out.print(theMaze[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+            new testFile("ClassProjects/Project1/compressedMaze.dat");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

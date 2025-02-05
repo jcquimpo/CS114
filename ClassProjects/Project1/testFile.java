@@ -16,21 +16,27 @@ public class testFile {
         try {
             this.outputFilename = filename;
             Scanner scan = new Scanner(new File(filename));
-            StringBuilder sb = new StringBuilder();
-            while (scan.hasNext()) {
-                sb.append(scan.nextLine());
-                this.rows++;
+
+            // Read the dimensions of the maze
+            if (scan.hasNext()) {
+                this.rows = scan.nextInt();
+                this.cols = scan.nextInt();
+                scan.nextLine(); // Consume the rest of the line
             }
-            this.cols = sb.length() / this.rows;
+
             this.theMaze = new char[this.rows][this.cols];
-            int m = 0;
-            System.out.println();
-            for (int i = 0; i < this.rows; i++) {
-                for (int j = 0; j < this.cols; j++) {
-                    this.theMaze[i][j] = sb.charAt(m++);
+            int row = 0;
+
+            // Read the maze data
+            while (scan.hasNext() && row < this.rows) {
+                String line = scan.nextLine();
+                for (int col = 0; col < this.cols; col++) {
+                    this.theMaze[row][col] = line.charAt(col);
                 }
+                row++;
             }
             scan.close();
+
             findStart();
             if (solve(this.rowStart, this.colStart)) {
                 System.out.println("Maze solved!");
@@ -57,13 +63,18 @@ public class testFile {
     }
 
     private boolean solve(int row, int col) {
-        // Check if out of bounds or on a wall or already visited
-        if (row < 0 || col < 0 || row >= rows || col >= cols || theMaze[row][col] == 'X' || theMaze[row][col] == '.') {
+        // Check if out of bounds
+        if (row < 0 || col < 0 || row >= rows || col >= cols) {
+            return false;
+        }
+
+        // Check if on a wall or already visited
+        if (theMaze[row][col] == 'X' || theMaze[row][col] == '.') {
             return false;
         }
 
         // Check if we found the goal
-        if (theMaze[row][col] == '-') { 
+        if (theMaze[row][col] == '-') {
             return true;
         }
 

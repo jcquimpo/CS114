@@ -1,115 +1,98 @@
 package Project1;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 
-public class testFile {
+public class testFile
+{
+	private static char[][] maze;
+	private static int startrow, startcol, finishrow, finishcol;
+	private static ArrayList<String> mazeBuffer;
 
-    private char[][] theMaze;
-    private int colStart, rowStart;
-    private int rows, cols;
-    private String outputFilename;
+	public static void initializeMaze(String fileName)
+	{
+		startrow = startcol = finishrow = finishcol = -1;
 
-    public testFile(String filename) throws IOException {
-        try {
-            this.outputFilename = filename;
-            Scanner scan = new Scanner(new File(filename));
+		mazeBuffer = new ArrayList<String>();
+		int numcols = 0;
+		try
+		{
+			Scanner file = new Scanner(new File(fileName));
+			while(file.hasNext())
+			{
+				String nextLine = file.nextLine();
+				mazeBuffer.add(nextLine);
+				if (nextLine.length() > numcols)
+					numcols = nextLine.length();
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(fileName + " has an issue");
+		}
+		int numrows = mazeBuffer.size();
+		maze = new char[numrows][numcols];
+		for (int r = 0; r < numrows; r ++)
+		{
+			String row = mazeBuffer.get(r);
+			for (int c = 0; c < numcols; c++)
+			{
+				if(row.length() >= c)
+					maze[r][c]=row.charAt(c);
+				else
+					maze[r][c]='X';
 
-            // Read the dimensions of the maze
-            if (scan.hasNext()) {
-                this.rows = scan.nextInt();
-                this.cols = scan.nextInt();
-                scan.nextLine(); // Consume the rest of the line
-            }
+				if (maze[r][c] == '+')
+				{
+					startrow = r;
+					startcol = c;
+				}
+				if (maze[r][c] == '-')
+				{
+					finishrow = r;
+					finishcol = c;
+				}
+			}
+		}
+		System.out.println("Maze loaded");
+	}
 
-            this.theMaze = new char[this.rows][this.cols];
-            int row = 0;
+	public static void printMaze()
+	{
+		for (char[] row: maze)
+		{
+			for (char c: row)
+				System.out.print(c);
+			System.out.println();
+		}
+		System.out.println();
 
-            // Read the maze data
-            while (scan.hasNext() && row < this.rows) {
-                String line = scan.nextLine();
-                for (int col = 0; col < this.cols; col++) {
-                    this.theMaze[row][col] = line.charAt(col);
-                }
-                row++;
-            }
-            scan.close();
+	}
 
-            findStart();
-            if (solve(this.rowStart, this.colStart)) {
-                System.out.println("Maze solved!");
-            } else {
-                System.out.println("Maze cannot be solved.");
-            }
-            printMaze();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("ERROR : " + e.getMessage());
-        }
-    }
+	public static void main (String[] args)
+	{
+		initializeMaze("ClassProjects/Project1/maze.dat");
+		printMaze();
+		if (solveMaze(startrow, startcol))
+			printMaze();
+		else
+			System.out.println("Unsolvable.");
+	}
 
-    private void findStart() {
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.cols; j++) {
-                if (this.theMaze[i][j] == '+') {
-                    this.rowStart = i;
-                    this.colStart = j;
-                    return;
-                }
-            }
-        }
-    }
-
-    private boolean solve(int row, int col) {
-        // Check if out of bounds
-        if (row < 0 || col < 0 || row >= rows || col >= cols) {
+    public static boolean solveMaze(int r, int c) 
+    {
+        if (r < 0 || c < 0 || r >= maze.length || c >= maze[0].length) 
             return false;
-        }
 
-        // Check if on a wall or already visited
-        if (theMaze[row][col] == 'X' || theMaze[row][col] == '.') {
-            return false;
-        }
-
-        // Check if we found the goal
-        if (theMaze[row][col] == '-') {
+        if (maze[r][c] == '-')
             return true;
-        }
 
-        // Mark the current cell as part of the path
-        if (theMaze[row][col] != '+') {
-            theMaze[row][col] = '+';
-        }
+        if (maze[r][c] != ' ' || maze[r][c] == '+')
+            return false;
 
-        // Recursively explore directions
-        if (solve(row - 1, col)) return true; // Up
-        if (solve(row + 1, col)) return true; // Down
-        if (solve(row, col - 1)) return true; // Left
-        if (solve(row, col + 1)) return true; // Right
-
-        // Unmark the current cell (backtrack)
-        if (theMaze[row][col] != '+') {
-            theMaze[row][col] = '.';
-        }
-        return false;
+        maze[r][c] = '.';    
     }
 
-    private void printMaze() {
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                System.out.print(theMaze[i][j]);
-            }
-            System.out.println();
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            new testFile("ClassProjects/Project1/compressedMaze.dat");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

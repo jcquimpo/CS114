@@ -96,7 +96,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            new testFile("ClassProjects/Project1/compressedMaze.dat");
+            new Main("ClassProjects/Project1/compressedMaze.dat");
         } catch (IOException e) {
             e.printStackTrace();
         }

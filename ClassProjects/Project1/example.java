@@ -5,8 +5,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
 
-public class Main {
-
+public class example {
     private static char[][] maze;
     private static int startrow, startcol, finishrow, finishcol;
     private static ArrayList<String> mazeBuffer;
@@ -35,13 +34,13 @@ public class Main {
                 if (c < row.length())
                     maze[r][c] = row.charAt(c);
                 else
-                    maze[r][c] = 'X';
+                    maze[r][c] = '+';
 
-                if (maze[r][c] == '+') {
+                if (maze[r][c] == 'S') {
                     startrow = r;
                     startcol = c;
                 }
-                if (maze[r][c] == '-') {
+                if (maze[r][c] == 'F') {
                     finishrow = r;
                     finishcol = c;
                 }
@@ -60,7 +59,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        initializeMaze("ClassProjects/Project1/maze.dat");
+        initializeMaze("ClassProjects/Project1/basicmaze.dat");
         printMaze();
         if (solveMaze(startrow, startcol))
             printMaze();
@@ -69,29 +68,16 @@ public class Main {
     }
 
     public static boolean solveMaze(int r, int c) {
-        // Check if out of bounds
         if (r < 0 || c < 0 || r >= maze.length || c >= maze[0].length)
             return false;
 
-        // Check if we found the goal
-        if (maze[r][c] == '-')
+        if (maze[r][c] == 'F')
             return true;
 
-        // Check if on a wall or already visited
-        if (maze[r][c] == 'X' || maze[r][c] == '.' || maze[r][c] == '+')
+        if (maze[r][c] != ' ' || maze[r][c] == 'S')
             return false;
 
-        // Mark the current cell as part of the path
-        maze[r][c] = '+';
-
-        // Recursively explore directions
-        if (solveMaze(r - 1, c)) return true; // Up
-        if (solveMaze(r + 1, c)) return true; // Down
-        if (solveMaze(r, c - 1)) return true; // Left
-        if (solveMaze(r, c + 1)) return true; // Right
-
-        // Unmark the current cell (backtrack)
         maze[r][c] = '.';
-        return false;
+        return true;
     }
 }

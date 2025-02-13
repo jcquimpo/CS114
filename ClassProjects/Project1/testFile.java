@@ -6,9 +6,8 @@ import java.io.FileNotFoundException;
 
 public class testFile {
     public static void main(String[] args) throws FileNotFoundException {
-        File inFile = new File("CS114/ClassProjects/Project1/maze.dat"); // reading in file
+        File inFile = new File("ClassProjects/Project1/maze.dat");
 
-        // variables for start and finish positions on the maze
         int startIndexX = 0;
         int startIndexY = 0;
         int exitIndexX = 0;
@@ -22,7 +21,7 @@ public class testFile {
         }
         sc.close();
 
-        // an array of strings is created, and is separated by lines
+        // an array of strings is created and separated by lines
         String[] Ss = S.split("\n");
         int maxCols = 0;
         for (String line : Ss) {
@@ -30,28 +29,33 @@ public class testFile {
                 maxCols = line.length();
             }
         }
-        char[][] maze = new char[Ss.length][maxCols]; // [row][col]
+        // [row][col]
+        char[][] maze = new char[Ss.length][maxCols]; 
 
         for (int i = 0; i < Ss.length; i++) { // runs through each row
             for (int x = 0; x < Ss[i].length(); x++) { // runs through each specific index in a given row (column)
                 maze[i][x] = Ss[i].charAt(x);
                 if (maze[i][x] == '+') {
+                    // replaces the start with S temporarily
+                    maze[i][x] = 'S';
                     startIndexX = i;
                     startIndexY = x;
                 } else if (maze[i][x] == '-') {
+                    // replaces the start with F temporarily
+                    maze[i][x] = 'F';
                     exitIndexX = i;
                     exitIndexY = x;
                 }
             }
-            for (int x = Ss[i].length(); x < maxCols; x++) {
-                maze[i][x] = 'X'; // Fill the remaining cells with 'X' to indicate walls
-            }
+            // for (int x = Ss[i].length(); x < maxCols; x++) {
+            //     maze[i][x] = 'X'; // Fill the remaining cells with 'X' to indicate walls
+            // }
         }
 
-        // prints out the start and finish variables, along with unsolved maze, on console
+        // prints out the start and finish variables
         System.out.println("Start: (" + startIndexX + ", " + startIndexY + ")");
         System.out.println("Finish: (" + exitIndexX + ", " + exitIndexY + ")");
-        printMaze(maze);
+        // printMaze(maze);
 
         // prints out the solved maze
         System.out.println(" ");
@@ -59,7 +63,7 @@ public class testFile {
         if (solveMaze(maze, startIndexX, startIndexY, exitIndexX, exitIndexY)) {
             printMaze(maze);
         } else {
-            System.out.println("Maze cannot be solved.");
+            System.out.println("Unsolvable Maze...");
         }
     }
 
@@ -74,23 +78,22 @@ public class testFile {
         }
     }
 
-    // all if statements check to see if they're out of bounds before moving
+    // base case
     public static boolean solveMaze(char[][] maze, int currentX, int currentY, int endX, int endY) {
         // checks to see if the current position is the finishing position
-        // if finishing position has been reached, the solved maze is then printed
+        // if finishing position has been reached; the solved maze is then printed
         if (currentX == endX && currentY == endY) {
-            maze[currentX][currentY] = 'F';
+            maze[currentX][currentY] = '-';
             return true;
         }
 
-        // Check if out of bounds or on a wall or already visited
-        // makes a path of Os for easier visualization
-        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == 'O') {
+        // check if out of bounds or on a wall or already visited
+        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == '+') {
             return false;
         }
 
-        // Mark the current cell as visited
-        maze[currentX][currentY] = 'O';
+        // mark visited cell
+        maze[currentX][currentY] = '+';
 
         // Recursively explore directions
         if (solveMaze(maze, currentX - 1, currentY, endX, endY)) return true; // Up
@@ -98,8 +101,8 @@ public class testFile {
         if (solveMaze(maze, currentX, currentY - 1, endX, endY)) return true; // Left
         if (solveMaze(maze, currentX, currentY + 1, endX, endY)) return true; // Right
 
-        // Unmark the current cell (backtrack)
-        maze[currentX][currentY] = ' ';
+        // '.' the current cell (backtrack)
+        maze[currentX][currentY] = '.';
 
         return false;
     }

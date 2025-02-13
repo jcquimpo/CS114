@@ -1,97 +1,109 @@
 package Project1;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
-public class Main {
+public class testFile {
+    public static void main(String[] args) throws FileNotFoundException {
+        File inFile = new File("ClassProjects/Project1/maze.dat");
 
-    private static char[][] maze;
-    private static int startrow, startcol, finishrow, finishcol;
-    private static ArrayList<String> mazeBuffer;
+        int startIndexX = 0;
+        int startIndexY = 0;
+        int exitIndexX = 0;
+        int exitIndexY = 0;
+        String S = "";
+        Scanner sc = new Scanner(inFile);
 
-    public static void initializeMaze(String fileName) {
-        startrow = startcol = finishrow = finishcol = -1;
-
-        mazeBuffer = new ArrayList<String>();
-        int numcols = 0;
-        try {
-            Scanner file = new Scanner(new File(fileName));
-            while (file.hasNext()) {
-                String nextLine = file.nextLine();
-                mazeBuffer.add(nextLine);
-                if (nextLine.length() > numcols)
-                    numcols = nextLine.length();
-            }
-        } catch (Exception e) {
-            System.out.println(fileName + " has an issue");
+        // scans the file incrementally for all the values needed
+        while (sc.hasNextLine()) {
+            S += sc.nextLine() + "\n"; // scans the maze in the file and then separates it by line
         }
-        int numrows = mazeBuffer.size();
-        maze = new char[numrows][numcols];
-        for (int r = 0; r < numrows; r++) {
-            String row = mazeBuffer.get(r);
-            for (int c = 0; c < numcols; c++) {
-                if (c < row.length())
-                    maze[r][c] = row.charAt(c);
-                else
-                    maze[r][c] = 'X';
+        sc.close();
 
-                if (maze[r][c] == '+') {
-                    startrow = r;
-                    startcol = c;
-                }
-                if (maze[r][c] == '-') {
-                    finishrow = r;
-                    finishcol = c;
-                }
+        // an array of strings is created and separated by lines
+        String[] Ss = S.split("\n");
+        int maxCols = 0;
+        for (String line : Ss) {
+            if (line.length() > maxCols) {
+                maxCols = line.length();
             }
         }
-        System.out.println("Maze loaded");
-    }
+        // [row][col]
+        char[][] maze = new char[Ss.length][maxCols]; 
 
-    public static void printMaze() {
-        for (char[] row : maze) {
-            for (char c : row)
-                System.out.print(c);
-            System.out.println();
+        for (int i = 0; i < Ss.length; i++) { // runs through each row
+            for (int x = 0; x < Ss[i].length(); x++) { // runs through each specific index in a given row (column)
+                maze[i][x] = Ss[i].charAt(x);
+                if (maze[i][x] == '+') {
+                    // replaces the start with S temporarily
+                    maze[i][x] = 'S';
+                    startIndexX = i;
+                    startIndexY = x;
+                } else if (maze[i][x] == '-') {
+                    // replaces the start with F temporarily
+                    maze[i][x] = 'F';
+                    exitIndexX = i;
+                    exitIndexY = x;
+                }
+            }
+            // for (int x = Ss[i].length(); x < maxCols; x++) {
+            //     maze[i][x] = 'X'; // Fill the remaining cells with 'X' to indicate walls
+            // }
         }
-        System.out.println();
+
+        // prints out the start and finish variables
+        System.out.println("Start: (" + startIndexX + ", " + startIndexY + ")");
+        System.out.println("Finish: (" + exitIndexX + ", " + exitIndexY + ")");
+        // printMaze(maze);
+
+        // prints out the solved maze
+        System.out.println(" ");
+        System.out.println("Solved Maze:");
+        if (solveMaze(maze, startIndexX, startIndexY, exitIndexX, exitIndexY)) {
+            printMaze(maze);
+        } else {
+            System.out.println("Unsolvable Maze...");
+        }
     }
 
-    public static void main(String[] args) {
-        initializeMaze("ClassProjects/Project1/maze.dat");
-        printMaze();
-        if (solveMaze(startrow, startcol))
-            printMaze();
-        else
-            System.out.println("Unsolvable.");
+    // prints the maze
+    public static void printMaze(char[][] maze) {
+        // for loop goes through each row and then each column
+        for (int i = 0; i < maze.length; i++) {
+            for (int x = 0; x < maze[i].length; x++) {
+                System.out.print(maze[i][x]); // prints each char of the maze
+            }
+            System.out.println(); // separates the chars by line
+        }
     }
 
-    public static boolean solveMaze(int r, int c) {
-        // Check if out of bounds
-        if (r < 0 || c < 0 || r >= maze.length || c >= maze[0].length)
-            return false;
-
-        // Check if we found the goal
-        if (maze[r][c] == '-')
+    // base case
+    public static boolean solveMaze(char[][] maze, int currentX, int currentY, int endX, int endY) {
+        // checks to see if the current position is the finishing position
+        // if finishing position has been reached; the solved maze is then printed
+        if (currentX == endX && currentY == endY) {
+            maze[currentX][currentY] = '-';
             return true;
+        }
 
-        // Check if on a wall or already visited
-        if (maze[r][c] == 'X' || maze[r][c] == '.' || maze[r][c] == '+')
+        // check if out of bounds or on a wall or already visited
+        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == '+') {
             return false;
+        }
 
-        // Mark the current cell as part of the path
-        maze[r][c] = '+';
+        // mark visited cell
+        maze[currentX][currentY] = '+';
 
         // Recursively explore directions
-        if (solveMaze(r - 1, c)) return true; // Up
-        if (solveMaze(r + 1, c)) return true; // Down
-        if (solveMaze(r, c - 1)) return true; // Left
-        if (solveMaze(r, c + 1)) return true; // Right
+        if (solveMaze(maze, currentX - 1, currentY, endX, endY)) return true; // Up
+        if (solveMaze(maze, currentX + 1, currentY, endX, endY)) return true; // Down
+        if (solveMaze(maze, currentX, currentY - 1, endX, endY)) return true; // Left
+        if (solveMaze(maze, currentX, currentY + 1, endX, endY)) return true; // Right
 
-        // Unmark the current cell (backtrack)
-        maze[r][c] = '.';
+        // '.' the current cell (backtrack)
+        maze[currentX][currentY] = '.';
+
         return false;
     }
 }

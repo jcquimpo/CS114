@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 
 public class testFile {
     public static void main(String[] args) throws FileNotFoundException {
-        File inFile = new File("ClassProjects/Project1/maze.dat"); // reading in file
+        File inFile = new File("CS114/ClassProjects/Project1/maze.dat"); // reading in file
 
         // variables for start and finish positions on the maze
         int startIndexX = 0;
@@ -65,7 +65,7 @@ public class testFile {
 
     // prints the maze
     public static void printMaze(char[][] maze) {
-        // similar to the string array, the for loop goes through each row and then each column
+        // for loop goes through each row and then each column
         for (int i = 0; i < maze.length; i++) {
             for (int x = 0; x < maze[i].length; x++) {
                 System.out.print(maze[i][x]); // prints each char of the maze
@@ -74,7 +74,6 @@ public class testFile {
         }
     }
 
-    // solves the maze using the two-dimensional char array
     // all if statements check to see if they're out of bounds before moving
     public static boolean solveMaze(char[][] maze, int currentX, int currentY, int endX, int endY) {
         // checks to see if the current position is the finishing position
@@ -85,12 +84,13 @@ public class testFile {
         }
 
         // Check if out of bounds or on a wall or already visited
-        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == 'V') {
+        // makes a path of Os for easier visualization
+        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == 'O') {
             return false;
         }
 
         // Mark the current cell as visited
-        maze[currentX][currentY] = 'V';
+        maze[currentX][currentY] = 'O';
 
         // Recursively explore directions
         if (solveMaze(maze, currentX - 1, currentY, endX, endY)) return true; // Up

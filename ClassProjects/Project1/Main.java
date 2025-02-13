@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class testFile {
+public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         File inFile = new File("ClassProjects/Project1/maze.dat");
 

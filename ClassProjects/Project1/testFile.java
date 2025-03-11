@@ -88,12 +88,12 @@ public class testFile {
         }
 
         // check if out of bounds or on a wall or already visited
-        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == '+') {
+        if (currentX < 0 || currentY < 0 || currentX >= maze.length || currentY >= maze[0].length || maze[currentX][currentY] == 'X' || maze[currentX][currentY] == 'O') {
             return false;
         }
 
         // mark visited cell
-        maze[currentX][currentY] = '+';
+        maze[currentX][currentY] = 'O';
 
         // Recursively explore directions
         if (solveMaze(maze, currentX - 1, currentY, endX, endY)) return true; // Up

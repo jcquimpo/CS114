@@ -6,7 +6,12 @@ import java.io.FileNotFoundException;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
-        File inFile = new File("ClassProjects/Project1/maze.dat");
+        // file path for your desktop computer
+        File inFile = new File("CS114/ClassProjects/Project1/maze.dat");
+        
+        // file path for your laptop computer
+        // File inFile = new File("ClassProjects/Project1/maze.dat");
+
 
         int startIndexX = 0;
         int startIndexY = 0;
@@ -21,7 +26,6 @@ public class Main {
         }
         sc.close();
 
-        // an array of strings is created and separated by lines
         String[] Ss = S.split("\n");
         int maxCols = 0;
         for (String line : Ss) {
@@ -33,23 +37,18 @@ public class Main {
         char[][] maze = new char[Ss.length][maxCols]; 
 
         for (int i = 0; i < Ss.length; i++) { // runs through each row
-            for (int x = 0; x < Ss[i].length(); x++) { // runs through each specific index in a given row (column)
+            for (int x = 0; x < Ss[i].length(); x++) { 
                 maze[i][x] = Ss[i].charAt(x);
                 if (maze[i][x] == '+') {
-                    // replaces the start with S temporarily
                     maze[i][x] = 'S';
                     startIndexX = i;
                     startIndexY = x;
                 } else if (maze[i][x] == '-') {
-                    // replaces the start with F temporarily
                     maze[i][x] = 'F';
                     exitIndexX = i;
                     exitIndexY = x;
                 }
             }
-            // for (int x = Ss[i].length(); x < maxCols; x++) {
-            //     maze[i][x] = 'X'; // Fill the remaining cells with 'X' to indicate walls
-            // }
         }
 
         // prints out the start and finish variables
@@ -72,9 +71,9 @@ public class Main {
         // for loop goes through each row and then each column
         for (int i = 0; i < maze.length; i++) {
             for (int x = 0; x < maze[i].length; x++) {
-                System.out.print(maze[i][x]); // prints each char of the maze
+                System.out.print(maze[i][x]);
             }
-            System.out.println(); // separates the chars by line
+            System.out.println(); 
         }
     }
 
@@ -101,7 +100,7 @@ public class Main {
         if (solveMaze(maze, currentX, currentY - 1, endX, endY)) return true; // Left
         if (solveMaze(maze, currentX, currentY + 1, endX, endY)) return true; // Right
 
-        // '.' the current cell (backtrack)
+        // '.' the current cell but is dead end
         maze[currentX][currentY] = '.';
 
         return false;

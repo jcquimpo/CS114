@@ -1,3 +1,4 @@
+package Project2;
 /*
  *
  *  List.java
@@ -22,14 +23,4 @@
     public abstract boolean search(E data);
 
     protected Node<E> head;
-}
-
-/*
- *
- *  SortedList.java
- *
- */
-
-public class SortedList<E extends Comparable<? super E>> extends List<E> {
-
 }

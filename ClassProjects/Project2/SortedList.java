@@ -7,34 +7,90 @@ package Project2;
  */
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class SortedList<E extends Comparable<? super E>> extends List<E> {
 
+	// Recursive insert method
 	@Override
-	public Iterator<E> iterator() {
-		// Implementation of iterator method
-		return null;
+	public void insert(E data) {
+		head = insertNode(head, data);
 	}
 
-	@Override
-	public void insert(E element) {
-		// Implementation of insert method
+	private Node<E> insertNode(Node<E> node, E data) {
+		if (node == null || data.compareTo(node.data) < 0) {
+			Node<E> newNode = new Node<>(data);
+			newNode.next = node;
+			return newNode;
+		}
+		node.next = insertNode(node.next, data);
+		return node;
 	}
 
+	// Recursive remove method
+	@Override
+	public void remove(E data) {
+		head = removeNode(head, data);
+	}
+
+	private Node<E> removeNode(Node<E> node, E data) {
+		if (node == null)
+			return null;
+		if (node.data.equals(data))
+			return node.next;
+		node.next = removeNode(node.next, data);
+		return node;
+	}
+
+	// Recursive retrieve method
 	@Override
 	public E retrieve(int index) {
-		// Implementation of retrieve method
-		return null;
+		return retrieveNode(head, index);
 	}
 
-	@Override
-	public void remove(E element) {
-		// Implementation of remove method
+	private E retrieveNode(Node<E> node, int index) {
+		if (node == null)
+			throw new IndexOutOfBoundsException();
+		if (index == 0)
+			return node.data;
+		return retrieveNode(node.next, index - 1);
 	}
 
+	// Recursive search method
 	@Override
-	public E search(E element) {
-		// Implementation of search method
-        return null;
+	public boolean search(E data) {
+		return searchNode(head, data);
+	}
+
+	private boolean searchNode(Node<E> node, E data) {
+		if (node == null)
+			return false;
+		if (node.data.equals(data))
+			return true;
+		return searchNode(node.next, data);
+	}
+
+	// Iterator inner class
+	@Override
+	public Iterator<E> iterator() {
+		return new SortedListIterator();
+	}
+
+	private class SortedListIterator implements Iterator<E> {
+		private Node<E> current = head;
+
+		@Override
+		public boolean hasNext() {
+			return current != null;
+		}
+
+		@Override
+		public E next() {
+			if (!hasNext())
+				throw new NoSuchElementException();
+			E data = current.data;
+			current = current.next;
+			return data;
+		}
 	}
 }

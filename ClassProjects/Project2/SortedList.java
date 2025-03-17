@@ -93,4 +93,28 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 			return data;
 		}
 	}
+
+	// Main method for testing
+    public static void main(String[] args) {
+        SortedList<Integer> list = new SortedList<>();
+        list.insert(5);
+        list.insert(3);
+        list.insert(8);
+        list.insert(1);
+
+        System.out.println("List contents:");
+        for (Integer value : list) {
+            System.out.println(value);
+        }
+
+        System.out.println("Retrieve index 2: " + list.retrieve(2));
+        System.out.println("Search for 8: " + list.search(8));
+        System.out.println("Search for 10: " + list.search(10));
+
+        list.remove(3);
+        System.out.println("List after removing 3:");
+        for (Integer value : list) {
+            System.out.println(value);
+        }
+    }
 }

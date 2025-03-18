@@ -101,20 +101,28 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
         list.insert(3);
         list.insert(8);
         list.insert(1);
+		list.insert(2);
+        list.insert(6);
+        list.insert(9);
+        list.insert(0);
+		list.insert(4);
+		list.insert(7);
 
+		// show the list
         System.out.println("List contents:");
         for (Integer value : list) {
             System.out.println(value);
         }
 
+		// function demonstration - retrieve, search, remove
         System.out.println("Retrieve index 2: " + list.retrieve(2));
         System.out.println("Search for 8: " + list.search(8));
         System.out.println("Search for 10: " + list.search(10));
-
         list.remove(3);
         System.out.println("List after removing 3:");
         for (Integer value : list) {
             System.out.println(value);
         }
     }
+
 }

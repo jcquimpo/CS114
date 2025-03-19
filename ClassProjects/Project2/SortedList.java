@@ -97,16 +97,11 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	// Main method for testing
     public static void main(String[] args) {
         SortedList<Integer> list = new SortedList<>();
-        list.insert(5);
-        list.insert(3);
-        list.insert(8);
-        list.insert(1);
-		list.insert(2);
-        list.insert(6);
-        list.insert(9);
-        list.insert(0);
-		list.insert(4);
-		list.insert(7);
+        // Insert values 
+        int[] values = {5, 3, 8, 1, 2, 6, 9, 0, 4, 7};
+        for (int value : values) {
+            list.insert(value);
+        }
 
 		// show the list
         System.out.println("List contents:");
@@ -119,6 +114,8 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
         System.out.println("Search for 8: " + list.search(8));
         System.out.println("Search for 10: " + list.search(10));
         list.remove(3);
+		list.remove(6);
+		list.remove(9);
         System.out.println("List after removing 3:");
         for (Integer value : list) {
             System.out.println(value);

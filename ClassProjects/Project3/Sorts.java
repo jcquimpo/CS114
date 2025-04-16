@@ -2,6 +2,7 @@ import java.util.Arrays;
 
 public class Sorts {
 
+    // Implementation of the HeapSorts function
     public static <T extends Comparable<? super T>> void heapSort(T[] array) {
         // Build heap
         for (int i = array.length / 2 - 1; i >= 0; i--) {

@@ -3,7 +3,7 @@ import java.util.Arrays;
 public class heapSort {
 
     public static <T extends Comparable<? super T>> void heapSort(T[] array) {
-         // Build heap
+        // Build heap
         for (int i = array.length / 2 - 1; i >= 0; i--) {
             heapify(array, array.length, i);
         }
@@ -44,4 +44,20 @@ public class heapSort {
             heapify(array, heapSize, largest);
         }
     }
+
+    // Main method for testing
+    public static void main(String[] args) {
+        // Test with an array of integers
+        Integer[] intArray = {4, 10, 3, 5, 1};
+        System.out.println("Original array: " + Arrays.toString(intArray));
+        heapSort(intArray);
+        System.out.println("Sorted array: " + Arrays.toString(intArray));
+
+        // Test with an array of strings
+        String[] stringArray = {"banana", "apple", "cherry", "date"};
+        System.out.println("\nOriginal array: " + Arrays.toString(stringArray));
+        heapSort(stringArray);
+        System.out.println("Sorted array: " + Arrays.toString(stringArray));
+    }
+
 }
